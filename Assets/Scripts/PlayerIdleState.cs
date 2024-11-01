@@ -42,5 +42,6 @@ public class PlayerIdleState : IState
     private void StateChange()
     {
         if (_inputHandler.jumpInput && _characterController.isGrounded) { _fsm.SetState("Jump"); }
+        if (_inputHandler.crouchInput && _characterController.isGrounded) { _fsm.SetState("Crouch"); }
     }
 }

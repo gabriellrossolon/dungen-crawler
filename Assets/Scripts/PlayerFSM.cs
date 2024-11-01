@@ -14,7 +14,8 @@ public class PlayerFSM : MonoBehaviour
 
     public float _playerSpeed = 5f;
     public float _playerSprintSpeed = 8f;
-    private float _playerActualSpeed;
+    public float _playerCrouchSpeed = 2.5f;
+    [SerializeField] private float _playerActualSpeed;
     public float _jumpForce;
 
     [Header("Debug")]
@@ -34,6 +35,7 @@ public class PlayerFSM : MonoBehaviour
         _fsm.AddState("Idle", new PlayerIdleState(_fsm, _inputHandler, _characterController, _playerActualSpeed));
         _fsm.AddState("Walk", new PlayerWalkState(_fsm, _inputHandler, _characterController, _cameraPos, () => _playerActualSpeed, _playerTransform));
         _fsm.AddState("Jump", new PlayerJumpState(_fsm, _inputHandler, _characterController, _animator, () => _playerActualSpeed, () => _jumpForce));
+        _fsm.AddState("Crouch", new PlayerCrouchState(_fsm, _inputHandler, _characterController, () =>  _playerActualSpeed, _animator, _playerTransform, _playerCrouchSpeed));
 
         _fsm.SetInitialState("Idle"); // Define o estado inicial
     }
@@ -68,6 +70,10 @@ public class PlayerFSM : MonoBehaviour
             {
                 targetSpeed = _playerSprintSpeed;
             }
+            else if (_inputHandler.crouchInput)
+            {
+                targetSpeed = _playerCrouchSpeed;
+            }
             else
             {
                 targetSpeed = _playerSpeed;
@@ -99,6 +105,10 @@ public class PlayerFSM : MonoBehaviour
         else if (_fsm.CurrentState is PlayerJumpState)
         {
             _currentState = "Jump";
+        }
+        else if (_fsm.CurrentState is PlayerCrouchState)
+        {
+            _currentState = "Crouch";
         }
     }
 }

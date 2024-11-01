@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.ricardogodoy.hierarchyseparator": "https://github.com/GabrielBigardi/HierarchySeparator.git",
     "com.unity.ai.navigation": "2.0.4",
     "com.unity.cinemachine": "2.10.2",
     "com.unity.collab-proxy": "2.5.2",

@@ -20,7 +20,7 @@ public class PlayerWalkState : IState
         Transform cameraPos,
         Func<float> getCurrentSpeed,
         Transform playerTransform
-    )
+        )
     {
         _fsm = fsm;
         _inputHandler = inputHandler;
@@ -68,5 +68,7 @@ public class PlayerWalkState : IState
     {
         if (movement == Vector3.zero) { _fsm.SetState("Idle"); }
         if (_inputHandler.jumpInput && _characterController.isGrounded) { _fsm.SetState("Jump"); }
+        if (_inputHandler.crouchInput && _characterController.isGrounded) { _fsm.SetState("Crouch"); }
+
     }
 }
