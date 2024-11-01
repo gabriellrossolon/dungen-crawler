@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerFSM : MonoBehaviour
@@ -13,7 +14,11 @@ public class PlayerFSM : MonoBehaviour
 
     public float _playerSpeed = 5f;
     public float _playerSprintSpeed = 8f;
-    [SerializeField] private float _playerActualSpeed;
+    private float _playerActualSpeed;
+    public float _jumpForce;
+
+    [Header("Debug")]
+    public string _currentState; // Nova variável para armazenar o estado atual
 
 
     private void Awake()
@@ -28,6 +33,7 @@ public class PlayerFSM : MonoBehaviour
 
         _fsm.AddState("Idle", new PlayerIdleState(_fsm, _inputHandler, _characterController, _playerActualSpeed));
         _fsm.AddState("Walk", new PlayerWalkState(_fsm, _inputHandler, _characterController, _cameraPos, () => _playerActualSpeed, _playerTransform));
+        _fsm.AddState("Jump", new PlayerJumpState(_fsm, _inputHandler, _characterController, _animator, () => _playerActualSpeed, () => _jumpForce));
 
         _fsm.SetInitialState("Idle"); // Define o estado inicial
     }
@@ -38,6 +44,8 @@ public class PlayerFSM : MonoBehaviour
         _fsm.Tick();
 
         SpeedController();
+
+        UpdateCurrentState();
     }
 
     private void FixedUpdate()
@@ -48,15 +56,22 @@ public class PlayerFSM : MonoBehaviour
 
     private void SpeedController()
     {
-        float targetSpeed;
+        float targetSpeed = 0f;
 
         if (_inputHandler.moveInput == Vector2.zero)
         {
             targetSpeed = 0;
         }
-        else
+        else if(_inputHandler.moveInput != Vector2.zero)
         {
-            targetSpeed = _playerSpeed;
+            if (_inputHandler.sprintInput)
+            {
+                targetSpeed = _playerSprintSpeed;
+            }
+            else
+            {
+                targetSpeed = _playerSpeed;
+            }
         }
 
         _playerActualSpeed = Mathf.Lerp(_playerActualSpeed, targetSpeed, 0.1f);
@@ -67,5 +82,23 @@ public class PlayerFSM : MonoBehaviour
         }
 
         _animator.SetFloat("speed", _playerActualSpeed);
+    }
+
+    private void UpdateCurrentState()
+    {
+        // Atualiza o estado atual baseado no estado da máquina de estados
+        // Aqui você pode implementar uma lógica simples que atualiza o _currentState baseado no que a sua máquina de estados está fazendo
+        if (_fsm.CurrentState is PlayerIdleState)
+        {
+            _currentState = "Idle";
+        }
+        else if (_fsm.CurrentState is PlayerWalkState)
+        {
+            _currentState = "Walk";
+        }
+        else if (_fsm.CurrentState is PlayerJumpState)
+        {
+            _currentState = "Jump";
+        }
     }
 }

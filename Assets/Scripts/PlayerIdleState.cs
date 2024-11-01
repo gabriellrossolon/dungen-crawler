@@ -2,11 +2,12 @@ using UnityEngine;
 
 public class PlayerIdleState : IState
 {
-    private StateMachine _fsm;
-    private InputHandler _inputHandler;
-    private CharacterController _characterController;
+    private readonly StateMachine _fsm;
+    private readonly InputHandler _inputHandler;
+    private readonly CharacterController _characterController;
+    private readonly float _playerActualSpeed;
+
     private Vector3 movement;
-    private float _playerActualSpeed;
 
     public PlayerIdleState(StateMachine fsm, InputHandler inputHandler, CharacterController characterController, float playerActualSpeed)
     {
@@ -27,6 +28,8 @@ public class PlayerIdleState : IState
     }
     public void OnTick()
     {
+        StateChange();
+
         movement = new Vector3(_inputHandler.moveInput.x, 0, _inputHandler.moveInput.y);
 
         _characterController.Move(movement * Time.deltaTime * _playerActualSpeed);
@@ -34,5 +37,10 @@ public class PlayerIdleState : IState
 
         if (movement != Vector3.zero)
             _fsm.SetState("Walk");
+    }
+
+    private void StateChange()
+    {
+        if (_inputHandler.jumpInput && _characterController.isGrounded) { _fsm.SetState("Jump"); }
     }
 }
