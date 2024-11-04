@@ -36,6 +36,7 @@ public class PlayerFSM : MonoBehaviour
         _fsm.AddState("Walk", new PlayerWalkState(_fsm, _inputHandler, _characterController, _cameraPos, () => _playerActualSpeed, _playerTransform));
         _fsm.AddState("Jump", new PlayerJumpState(_fsm, _inputHandler, _characterController, _animator, () => _playerActualSpeed, () => _jumpForce));
         _fsm.AddState("Crouch", new PlayerCrouchState(_fsm, _inputHandler, _characterController, () =>  _playerActualSpeed, _animator, _playerTransform, _playerCrouchSpeed));
+        _fsm.AddState("Combat", new PlayerCombatState(_fsm, _inputHandler, _animator));
 
         _fsm.SetInitialState("Idle"); // Define o estado inicial
     }
@@ -109,6 +110,10 @@ public class PlayerFSM : MonoBehaviour
         else if (_fsm.CurrentState is PlayerCrouchState)
         {
             _currentState = "Crouch";
+        }
+        else if (_fsm.CurrentState is PlayerCombatState)
+        {
+            _currentState = "Combat";
         }
     }
 }
