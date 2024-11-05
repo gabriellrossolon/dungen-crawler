@@ -9,6 +9,7 @@ public class InputHandler : MonoBehaviour
     [HideInInspector] public bool crouchInput;
     [HideInInspector] public bool attackInput;
 
+    [HideInInspector] public bool canRun = true;
 
     public void OnMove(InputAction.CallbackContext context)
     {
@@ -18,7 +19,14 @@ public class InputHandler : MonoBehaviour
     public void OnSprint(InputAction.CallbackContext context)
     {
         float value = context.ReadValue<float>();
-        sprintInput = value > 0.1f;
+        if(value > 0.1f && canRun)
+        {
+            sprintInput = true;
+        }
+        else
+        {
+            sprintInput = false;
+        }
     }
 
     public void OnJump(InputAction.CallbackContext context)
@@ -36,6 +44,6 @@ public class InputHandler : MonoBehaviour
     public void OnAttack(InputAction.CallbackContext context)
     {
         float value = context.ReadValue<float>();
-        attackInput = value > 0.1f;
+        attackInput = value > 0.9f;
     }
 }

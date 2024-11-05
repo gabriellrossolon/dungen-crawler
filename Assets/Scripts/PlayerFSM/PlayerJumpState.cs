@@ -53,6 +53,8 @@ public class PlayerJumpState : IState
             entryXValue = _inputHandler.moveInput.x;
             entryYValue = _inputHandler.moveInput.y;
         }
+
+        _inputHandler.canRun = false;
     }
     public void OnExit()
     {

@@ -32,6 +32,7 @@ public class PlayerWalkState : IState
 
     public void OnEnter()
     {
+        _inputHandler.canRun = true;
     }
     public void OnExit()
     {
@@ -69,6 +70,6 @@ public class PlayerWalkState : IState
         if (movement == Vector3.zero) { _fsm.SetState("Idle"); }
         if (_inputHandler.jumpInput && _characterController.isGrounded) { _fsm.SetState("Jump"); }
         if (_inputHandler.crouchInput && _characterController.isGrounded) { _fsm.SetState("Crouch"); }
-        if (_inputHandler.attackInput) { _fsm.SetState("Combat"); }
+        if (_inputHandler.attackInput || Input.GetKeyDown(KeyCode.R)) { _fsm.SetState("Combat"); }
     }
 }

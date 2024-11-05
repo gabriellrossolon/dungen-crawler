@@ -11,6 +11,9 @@ public class PlayerFSM : MonoBehaviour
     private Transform _cameraPos;
     private Transform _playerTransform;
     private Animator _animator;
+    [SerializeField] private GameObject _weaponHandSlot;
+    [SerializeField] private GameObject _weaponBackSlot;
+
 
     public float _playerSpeed = 5f;
     public float _playerSprintSpeed = 8f;
@@ -36,7 +39,7 @@ public class PlayerFSM : MonoBehaviour
         _fsm.AddState("Walk", new PlayerWalkState(_fsm, _inputHandler, _characterController, _cameraPos, () => _playerActualSpeed, _playerTransform));
         _fsm.AddState("Jump", new PlayerJumpState(_fsm, _inputHandler, _characterController, _animator, () => _playerActualSpeed, () => _jumpForce));
         _fsm.AddState("Crouch", new PlayerCrouchState(_fsm, _inputHandler, _characterController, () =>  _playerActualSpeed, _animator, _playerTransform, _playerCrouchSpeed));
-        _fsm.AddState("Combat", new PlayerCombatState(_fsm, _inputHandler, _animator));
+        _fsm.AddState("Combat", new PlayerCombatState(_fsm, _inputHandler, _animator, _characterController, _playerTransform, () => _playerActualSpeed, _weaponHandSlot, _weaponBackSlot));
 
         _fsm.SetInitialState("Idle"); // Define o estado inicial
     }
@@ -115,5 +118,7 @@ public class PlayerFSM : MonoBehaviour
         {
             _currentState = "Combat";
         }
+
+        HudManager.Instance.stateText.text = _currentState;
     }
 }

@@ -43,6 +43,7 @@ public class PlayerCrouchState : IState
     {
         _animator.SetBool("isCrouch", true);
         Crouch();
+        _inputHandler.canRun = false;
     }
     public void OnExit()
     {
