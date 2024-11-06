@@ -12,11 +12,12 @@ public class PlayerCombatState : IState
     private readonly Func<float> _getCurrentSpeed;
     private readonly GameObject _weaponHandSlot;
     private readonly GameObject _weaponBackSlot;
+    private readonly Func<bool> _usingTwoHand;
 
-    private bool canAttack = true;
+    private bool canAttack = false;
     private Vector3 movement;
     private float _playerActualSpeed;
-
+    private bool drawingWeapon;
 
     public PlayerCombatState(
          StateMachine fsm,
@@ -26,7 +27,8 @@ public class PlayerCombatState : IState
          Transform playerTransform,
          Func<float> getCurrentSpeed,
          GameObject weaponHandSlot,
-         GameObject weaponBackSlot
+         GameObject weaponBackSlot,
+         Func<bool> usingTwoHand
          )
     {
         _fsm = fsm;
@@ -37,6 +39,7 @@ public class PlayerCombatState : IState
         _getCurrentSpeed = getCurrentSpeed;
         _weaponHandSlot = weaponHandSlot;
         _weaponBackSlot = weaponBackSlot;
+        _usingTwoHand = usingTwoHand;
     }
 
     public void OnEnter()
@@ -44,11 +47,24 @@ public class PlayerCombatState : IState
         _animator.SetBool("combatState", true);
         _inputHandler.canRun = false;
         _animator.SetTrigger("drawWeapon");
+        if( _usingTwoHand())
+        {
+            _animator.SetBool("1HEquip", false);
+            _animator.SetBool("2HEquip", true);
+        }
+        else
+        {
+            _animator.SetBool("1HEquip", true);
+            _animator.SetBool("2HEquip", false);
+        }
     }
     public void OnExit()
     {
         _animator.SetBool("combatState", false);
-        _animator.SetTrigger("undrawWeapon");
+        drawingWeapon = false;
+        canAttack = false;
+        _animator.SetBool("1HEquip", false);
+        _animator.SetBool("2HEquip", false);
     }
     public void OnFixedTick()
     {
@@ -57,27 +73,36 @@ public class PlayerCombatState : IState
     public void OnTick()
     {
         _playerActualSpeed = _getCurrentSpeed();
-        if (_inputHandler.attackInput) { ExecutaAttack(); }
+        if (_inputHandler.rightHandInput) { ExecutaAttackOne(); }
+        if (_inputHandler.leftHandInput) { ExecuteAttackTwo(); }
         AttackCooldown();
         Move();
         AnimationControll();
         ChangeState();
     }
 
-    private void ExecutaAttack()
+    private void ExecutaAttackOne()
     {
-        if (!canAttack)
+        if (canAttack)
         {
-            return;
+            _animator.SetTrigger("isAttack");
+            canAttack = false;
         }
-        _animator.SetTrigger("isAttack");
-        canAttack = false;
+    }
+
+    private void ExecuteAttackTwo()
+    {
+        if (canAttack)
+        {
+            _animator.SetTrigger("isAttackTwo");
+            canAttack = false;
+        }
     }
 
     private void AttackCooldown()
     {
-        AnimatorStateInfo stateInfo = _animator.GetCurrentAnimatorStateInfo(2);
-        if (stateInfo.IsName("Attack1H") || stateInfo.IsName("Attack2H"))
+        AnimatorStateInfo stateInfo = _animator.GetCurrentAnimatorStateInfo(3);
+        if (stateInfo.IsName("Attack1H") || stateInfo.IsName("Attack1H2") || stateInfo.IsName("Attack2H") || stateInfo.IsName("Attack2H2"))
         {
             if (stateInfo.normalizedTime >= 0.5f)
             {
@@ -90,7 +115,8 @@ public class PlayerCombatState : IState
     {
         if (Input.GetKeyDown(KeyCode.R))
         {
-            _fsm.SetState("Idle"); 
+            _animator.SetTrigger("undrawWeapon");
+            drawingWeapon = true;
         }
     }
 
@@ -111,23 +137,27 @@ public class PlayerCombatState : IState
 
     private void AnimationControll()
     {
-        AnimatorStateInfo stateInfo = _animator.GetCurrentAnimatorStateInfo(3);
-        Debug.Log("Animação Atual: " + stateInfo.shortNameHash + ", Normalized Time: " + stateInfo.normalizedTime);
-
+        AnimatorStateInfo stateInfo = _animator.GetCurrentAnimatorStateInfo(2);
         if (stateInfo.IsName("DrawWeapon"))
         {
             if (stateInfo.normalizedTime >= 0.4f)
             {
                 _weaponBackSlot.SetActive(false);
                 _weaponHandSlot.SetActive(true);
+                canAttack = true;
             }
-        } 
-        else if (stateInfo.IsName("UndrawWeapon"))
+        }
+        
+        if (drawingWeapon)
         {
-            if (stateInfo.normalizedTime >= 0.4f)
+            if (stateInfo.IsName("UndrawWeapon"))
             {
-                _weaponBackSlot.SetActive(true);
-                _weaponHandSlot.SetActive(false);
+                if (stateInfo.normalizedTime >= 0.7f)
+                {
+                    _weaponBackSlot.SetActive(true);
+                    _weaponHandSlot.SetActive(false);
+                    _fsm.SetState("Idle");
+                }
             }
         }
     }

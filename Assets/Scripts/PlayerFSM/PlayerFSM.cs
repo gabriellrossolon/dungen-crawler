@@ -13,6 +13,7 @@ public class PlayerFSM : MonoBehaviour
     private Animator _animator;
     [SerializeField] private GameObject _weaponHandSlot;
     [SerializeField] private GameObject _weaponBackSlot;
+    public bool _usingTwoHand;
 
 
     public float _playerSpeed = 5f;
@@ -39,7 +40,7 @@ public class PlayerFSM : MonoBehaviour
         _fsm.AddState("Walk", new PlayerWalkState(_fsm, _inputHandler, _characterController, _cameraPos, () => _playerActualSpeed, _playerTransform));
         _fsm.AddState("Jump", new PlayerJumpState(_fsm, _inputHandler, _characterController, _animator, () => _playerActualSpeed, () => _jumpForce));
         _fsm.AddState("Crouch", new PlayerCrouchState(_fsm, _inputHandler, _characterController, () =>  _playerActualSpeed, _animator, _playerTransform, _playerCrouchSpeed));
-        _fsm.AddState("Combat", new PlayerCombatState(_fsm, _inputHandler, _animator, _characterController, _playerTransform, () => _playerActualSpeed, _weaponHandSlot, _weaponBackSlot));
+        _fsm.AddState("Combat", new PlayerCombatState(_fsm, _inputHandler, _animator, _characterController, _playerTransform, () => _playerActualSpeed, _weaponHandSlot, _weaponBackSlot, () => _usingTwoHand));
 
         _fsm.SetInitialState("Idle"); // Define o estado inicial
     }

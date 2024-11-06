@@ -55,6 +55,10 @@ public class PlayerJumpState : IState
         }
 
         _inputHandler.canRun = false;
+
+        movement = new Vector3(entryXValue, 0, entryYValue);
+        movement = Camera.main.transform.TransformDirection(movement);
+        movement.y = 0;
     }
     public void OnExit()
     {
@@ -77,9 +81,7 @@ public class PlayerJumpState : IState
 
     private void Jump()
     {
-        movement = new Vector3(entryXValue, 0, entryYValue);
-        movement = Camera.main.transform.TransformDirection(movement);
-        movement.y = 0;
+        
 
         if (normalJump)
         {

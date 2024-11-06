@@ -44,7 +44,7 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: hum_male_meleeattack_2H_Weapon_01
+      name: MeleeAttack2H1
       takeName: hum_male_meleeattack_2H_Weapon_01
       internalID: 0
       firstFrame: 2

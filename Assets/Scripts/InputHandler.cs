@@ -7,7 +7,9 @@ public class InputHandler : MonoBehaviour
     [HideInInspector] public bool sprintInput;
     [HideInInspector] public bool jumpInput;
     [HideInInspector] public bool crouchInput;
-    [HideInInspector] public bool attackInput;
+    [HideInInspector] public bool rightHandInput;
+    [HideInInspector] public bool leftHandInput;
+
 
     [HideInInspector] public bool canRun = true;
 
@@ -41,9 +43,15 @@ public class InputHandler : MonoBehaviour
         crouchInput = value > 0.1f;
     }
 
-    public void OnAttack(InputAction.CallbackContext context)
+    public void OnRightHand(InputAction.CallbackContext context)
     {
         float value = context.ReadValue<float>();
-        attackInput = value > 0.9f;
+        rightHandInput = value > 0.9f;
+    }
+
+    public void OnLeftHand(InputAction.CallbackContext context)
+    {
+        float value = context.ReadValue<float>();
+        leftHandInput = value > 0.9f;
     }
 }
