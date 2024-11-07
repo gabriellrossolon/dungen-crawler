@@ -18,14 +18,8 @@ public class SwordBehavior : MonoBehaviour
     private void Update()
     {
         meshColl.enabled = IsAttacking();
-        if (twoHandWeapon)
-        {
-            playerFSM._usingTwoHand = true;
-        }
-        else
-        {
-            playerFSM._usingTwoHand = false;
-        }
+
+        playerFSM._usingTwoHand = twoHandWeapon;
     }
     private void OnTriggerEnter(Collider other)
     {

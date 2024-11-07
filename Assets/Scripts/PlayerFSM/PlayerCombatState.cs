@@ -44,19 +44,12 @@ public class PlayerCombatState : IState
 
     public void OnEnter()
     {
+        _animator.SetBool("1HEquip", !_usingTwoHand());
+        _animator.SetBool("2HEquip", _usingTwoHand());
+
         _animator.SetBool("combatState", true);
         _inputHandler.canRun = false;
         _animator.SetTrigger("drawWeapon");
-        if( _usingTwoHand())
-        {
-            _animator.SetBool("1HEquip", false);
-            _animator.SetBool("2HEquip", true);
-        }
-        else
-        {
-            _animator.SetBool("1HEquip", true);
-            _animator.SetBool("2HEquip", false);
-        }
     }
     public void OnExit()
     {
