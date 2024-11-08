@@ -15,6 +15,7 @@ public class PlayerCombatState : IState
     private readonly Func<bool> _usingTwoHand;
 
     private bool canAttack = false;
+    private bool canMove = true;
     private Vector3 movement;
     private float _playerActualSpeed;
     private bool drawingWeapon;
@@ -97,11 +98,17 @@ public class PlayerCombatState : IState
         AnimatorStateInfo stateInfo = _animator.GetCurrentAnimatorStateInfo(3);
         if (stateInfo.IsName("Attack1H") || stateInfo.IsName("Attack1H2") || stateInfo.IsName("Attack2H") || stateInfo.IsName("Attack2H2"))
         {
+            canMove = false;
             if (stateInfo.normalizedTime >= 0.5f)
             {
                 canAttack = true;
-            }
-        }
+
+                if (stateInfo.normalizedTime >= 0.6f)
+                {
+                    canMove = true;
+                }
+            } 
+        }    
     }
 
     private void ChangeState()
@@ -115,12 +122,15 @@ public class PlayerCombatState : IState
 
     private void Move()
     {
-        movement = new Vector3(_inputHandler.moveInput.x, 0, _inputHandler.moveInput.y);
-        movement = Camera.main.transform.TransformDirection(movement);
-        movement.y = 0;
+        if (canMove)
+        {
+            movement = new Vector3(_inputHandler.moveInput.x, 0, _inputHandler.moveInput.y);
+            movement = Camera.main.transform.TransformDirection(movement);
+            movement.y = 0;
 
-        _characterController.Move(_playerActualSpeed * Time.deltaTime * movement);
-        _characterController.Move(new Vector3(0, -9.81f, 0) * Time.deltaTime);
+            _characterController.Move(_playerActualSpeed * Time.deltaTime * movement);
+            _characterController.Move(new Vector3(0, -9.81f, 0) * Time.deltaTime);
+        }
 
         if (movement != Vector3.zero)
         {

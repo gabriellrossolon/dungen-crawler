@@ -32,6 +32,6 @@ public class SwordBehavior : MonoBehaviour
     private bool IsAttacking()
     {
         AnimatorStateInfo stateInfo = anim.GetCurrentAnimatorStateInfo(3);
-        return (stateInfo.IsName("Attack1H") || stateInfo.IsName("Attack1H2") || stateInfo.IsName("Attack2H") || stateInfo.IsName("Attack2H2")) && stateInfo.normalizedTime > 0.3f;
+        return (stateInfo.IsName("Attack1H") || stateInfo.IsName("Attack1H2") || stateInfo.IsName("Attack2H") || stateInfo.IsName("Attack2H2")) && stateInfo.normalizedTime > 0.4f;
     }
 }

@@ -5,6 +5,7 @@ public class HudManager : MonoBehaviour
 {
     public static HudManager Instance { get; private set; }
     public Text stateText;
+    public Text fps;
     private void Awake()
     {
         if (Instance != null && Instance != this)
