@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: a11f8449992f5634e9f1257e4945dd8d
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 1818
+  packageName: Skeletons Pack
+  packageVersion: 1.0
+  assetPath: Assets/SkeletonData/Materials/skeletonHead.mat
+  uploadId: 25463

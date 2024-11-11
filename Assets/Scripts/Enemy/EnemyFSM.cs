@@ -6,6 +6,8 @@ public class EnemyFSM : MonoBehaviour
     private StateMachine _fsm;
     private NavMeshAgent _agent;
     private Transform _playerPos;
+    private Animator _animator;
+    private EnemyWeaponBehavior _enemyWeaponBehavior;
     [SerializeField] float _detectionRange;
     
     [Header("Debug")]
@@ -16,10 +18,12 @@ public class EnemyFSM : MonoBehaviour
         _fsm = new();
         _agent = GetComponent<NavMeshAgent>();
         _playerPos = GameObject.FindWithTag("Player")?.transform;
+        _animator = GetComponentInChildren<Animator>();
+        _enemyWeaponBehavior = GetComponentInChildren<EnemyWeaponBehavior>();
 
         _fsm.AddState("Idle", new EnemyIdleState(_fsm, _agent, _playerPos, _detectionRange));
-        _fsm.AddState("Chase", new EnemyChaseState(_fsm, _agent, _playerPos, _detectionRange));
-
+        _fsm.AddState("Chase", new EnemyChaseState(_fsm, _agent, _playerPos, _detectionRange, _animator));
+        _fsm.AddState("Attack", new EnemyAttackState(_fsm, _animator, _enemyWeaponBehavior));
 
         _fsm.SetInitialState("Idle"); 
     }
@@ -45,6 +49,10 @@ public class EnemyFSM : MonoBehaviour
         else if (_fsm.CurrentState is EnemyChaseState)
         {
             _currentState = "Chase";
+        }
+        else if (_fsm.CurrentState is EnemyAttackState)
+        {
+            _currentState = "Attack";
         }
     }
 }
