@@ -253,7 +253,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 893db3f9afb0cc0408e02ca196f429f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponDamage: 0
+  weaponDamage: 10
   isAttacking: 0
 --- !u!1001 &4655686748665699197
 PrefabInstance:

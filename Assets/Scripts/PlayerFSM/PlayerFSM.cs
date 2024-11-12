@@ -14,6 +14,7 @@ public class PlayerFSM : MonoBehaviour
     [SerializeField] private GameObject _weaponHandSlot;
     [SerializeField] private GameObject _weaponBackSlot;
     public bool _usingTwoHand;
+    private PlayerStats _playerStats;
 
 
     public float _playerSpeed = 5f;
@@ -35,12 +36,13 @@ public class PlayerFSM : MonoBehaviour
         _cameraPos = Camera.main.transform;
         _playerTransform = transform;
         _animator = GetComponent<Animator>();
+        _playerStats = GetComponent<PlayerStats>();
 
         _fsm.AddState("Idle", new PlayerIdleState(_fsm, _inputHandler, _characterController, _playerActualSpeed));
-        _fsm.AddState("Walk", new PlayerWalkState(_fsm, _inputHandler, _characterController, _cameraPos, () => _playerActualSpeed, _playerTransform));
+        _fsm.AddState("Walk", new PlayerWalkState(_fsm, _inputHandler, _characterController, _cameraPos, () => _playerActualSpeed, _playerTransform, _playerStats));
         _fsm.AddState("Jump", new PlayerJumpState(_fsm, _inputHandler, _characterController, _animator, () => _playerActualSpeed, () => _jumpForce));
         _fsm.AddState("Crouch", new PlayerCrouchState(_fsm, _inputHandler, _characterController, () =>  _playerActualSpeed, _animator, _playerTransform, _playerCrouchSpeed));
-        _fsm.AddState("Combat", new PlayerCombatState(_fsm, _inputHandler, _animator, _characterController, _playerTransform, () => _playerActualSpeed, _weaponHandSlot, _weaponBackSlot, () => _usingTwoHand));
+        _fsm.AddState("Combat", new PlayerCombatState(_fsm, _inputHandler, _animator, _characterController, _playerTransform, () => _playerActualSpeed, _weaponHandSlot, _weaponBackSlot, () => _usingTwoHand, _playerStats));
 
         _fsm.SetInitialState("Idle"); // Define o estado inicial
     }
@@ -68,12 +70,21 @@ public class PlayerFSM : MonoBehaviour
         if (_inputHandler.moveInput == Vector2.zero)
         {
             targetSpeed = 0;
+            _playerStats.canStaminaRegen = true;
         }
         else if(_inputHandler.moveInput != Vector2.zero)
         {
-            if (_inputHandler.sprintInput)
+            if (_inputHandler.sprintInput && _playerStats.currentStamina > 0)
             {
+                _playerStats.canStaminaRegen = false;
                 targetSpeed = _playerSprintSpeed;
+
+                _playerStats.staminaDrainCooldown += Time.deltaTime;
+                if (_playerStats.staminaDrainCooldown >= 0.1f)
+                {
+                    _playerStats.currentStamina--;
+                    _playerStats.staminaDrainCooldown = 0f;
+                }
             }
             else if (_inputHandler.crouchInput)
             {
@@ -82,6 +93,7 @@ public class PlayerFSM : MonoBehaviour
             else
             {
                 targetSpeed = _playerSpeed;
+                _playerStats.canStaminaRegen = true;
             }
         }
 

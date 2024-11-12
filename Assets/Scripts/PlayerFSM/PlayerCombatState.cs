@@ -13,12 +13,14 @@ public class PlayerCombatState : IState
     private readonly GameObject _weaponHandSlot;
     private readonly GameObject _weaponBackSlot;
     private readonly Func<bool> _usingTwoHand;
+    private readonly PlayerStats _playerStats;
 
     private bool canAttack = false;
     private bool canMove = true;
     private Vector3 movement;
     private float _playerActualSpeed;
     private bool drawingWeapon;
+    private bool canRemoveStamina;
 
     public PlayerCombatState(
          StateMachine fsm,
@@ -29,7 +31,8 @@ public class PlayerCombatState : IState
          Func<float> getCurrentSpeed,
          GameObject weaponHandSlot,
          GameObject weaponBackSlot,
-         Func<bool> usingTwoHand
+         Func<bool> usingTwoHand,
+         PlayerStats playerStats
          )
     {
         _fsm = fsm;
@@ -41,6 +44,7 @@ public class PlayerCombatState : IState
         _weaponHandSlot = weaponHandSlot;
         _weaponBackSlot = weaponBackSlot;
         _usingTwoHand = usingTwoHand;
+        _playerStats = playerStats;
     }
 
     public void OnEnter()
@@ -81,6 +85,7 @@ public class PlayerCombatState : IState
         {
             _animator.SetTrigger("isAttack");
             canAttack = false;
+            RemoveStamina(10f);
         }
     }
 
@@ -90,7 +95,18 @@ public class PlayerCombatState : IState
         {
             _animator.SetTrigger("isAttackTwo");
             canAttack = false;
+            RemoveStamina(15f);
         }
+    }
+
+    private void RemoveStamina(float value)
+    {
+        if (canRemoveStamina)
+        {
+            canRemoveStamina = false;
+            _playerStats.currentStamina -= value;
+        }
+        
     }
 
     private void AttackCooldown()
@@ -106,9 +122,13 @@ public class PlayerCombatState : IState
                 if (stateInfo.normalizedTime >= 0.6f)
                 {
                     canMove = true;
-                }
-            } 
-        }    
+                } 
+            }
+        }
+        else
+        {
+            canRemoveStamina = true;
+        }
     }
 
     private void ChangeState()

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using UnityEngine;
 
 public class PlayerCrouchState : IState
@@ -14,12 +15,11 @@ public class PlayerCrouchState : IState
     private Vector3 movement;
     private float _playerActualSpeed;
 
-    private float crouchCenterY = 0.70f;
-    private float crouchHeight = 1.35f;
     private float normalCenterY = 1.03f;
+    private float crouchCenterY = 0.70f;
     private float normalHeight = 2f;
-
-
+    private float crouchHeight = 1.35f;
+    
     public PlayerCrouchState(
         StateMachine fsm,
         InputHandler inputHandler,

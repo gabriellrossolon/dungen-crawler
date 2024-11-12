@@ -9,6 +9,7 @@ public class PlayerWalkState : IState
     private readonly Transform _cameraPos;
     private readonly Transform _playerTransform;
     private readonly Func<float> _getCurrentSpeed;
+    private readonly PlayerStats _playerStats;
 
     private float _playerActualSpeed;
     private Vector3 movement;
@@ -19,7 +20,8 @@ public class PlayerWalkState : IState
         CharacterController characterController,
         Transform cameraPos,
         Func<float> getCurrentSpeed,
-        Transform playerTransform
+        Transform playerTransform,
+        PlayerStats playerStats
         )
     {
         _fsm = fsm;
@@ -28,6 +30,7 @@ public class PlayerWalkState : IState
         _cameraPos = cameraPos;
         _getCurrentSpeed = getCurrentSpeed;
         _playerTransform = playerTransform;
+        _playerStats = playerStats;
     }
 
     public void OnEnter()

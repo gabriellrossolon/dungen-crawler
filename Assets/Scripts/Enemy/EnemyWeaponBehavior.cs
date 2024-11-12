@@ -26,7 +26,7 @@ public class EnemyWeaponBehavior : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            Debug.Log("Collided");
+            other.GetComponent<PlayerStats>().DoDamage(weaponDamage);
         }
     }
 }
