@@ -34,7 +34,7 @@ public class EnemyAttackState : IState
         AnimatorStateInfo stateInfo = _animator.GetCurrentAnimatorStateInfo(0);
         if (stateInfo.IsName("Attack"))
         {
-            if (stateInfo.normalizedTime >= 0.3f)
+            if (stateInfo.normalizedTime >= 0.3f && stateInfo.normalizedTime < 0.35f)
             {
                 _enemyWeaponBehavior.isAttacking = true;
             }

@@ -9,6 +9,7 @@ public class EnemyFSM : MonoBehaviour
     private Animator _animator;
     private EnemyWeaponBehavior _enemyWeaponBehavior;
     [SerializeField] float _detectionRange;
+    private EnemyStats _enemyStats;
     
     [Header("Debug")]
     public string _currentState;
@@ -20,6 +21,7 @@ public class EnemyFSM : MonoBehaviour
         _playerPos = GameObject.FindWithTag("Player")?.transform;
         _animator = GetComponentInChildren<Animator>();
         _enemyWeaponBehavior = GetComponentInChildren<EnemyWeaponBehavior>();
+        _enemyStats = GetComponent<EnemyStats>();
 
         _fsm.AddState("Idle", new EnemyIdleState(_fsm, _agent, _playerPos, _detectionRange));
         _fsm.AddState("Chase", new EnemyChaseState(_fsm, _agent, _playerPos, _detectionRange, _animator));

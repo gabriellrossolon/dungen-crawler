@@ -25,7 +25,7 @@ public class SwordBehavior : MonoBehaviour
     {
         if (other.CompareTag("Enemy"))
         {
-            Destroy(other.gameObject);
+            other.GetComponent<EnemyStats>().DoDamage(swordDamage);
         }
     }
 

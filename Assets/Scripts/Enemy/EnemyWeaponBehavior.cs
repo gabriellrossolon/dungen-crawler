@@ -12,20 +12,14 @@ public class EnemyWeaponBehavior : MonoBehaviour
 
     void Update()
     {
-        if (isAttacking)
-        {
-            meshColl.enabled = true;
-        }
-        else
-        {
-            meshColl.enabled = false;
-        }
+        meshColl.enabled = isAttacking;
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
+            isAttacking = false;
             other.GetComponent<PlayerStats>().DoDamage(weaponDamage);
         }
     }
