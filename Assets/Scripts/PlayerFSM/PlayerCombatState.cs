@@ -114,7 +114,7 @@ public class PlayerCombatState : IState
         AnimatorStateInfo stateInfo = _animator.GetCurrentAnimatorStateInfo(3);
         if (stateInfo.IsName("Attack1H") || stateInfo.IsName("Attack1H2") || stateInfo.IsName("Attack2H") || stateInfo.IsName("Attack2H2"))
         {
-            canMove = false;
+            canMove = true; //Mudar aqui para false caso o Player fique freezado durante o inicio do ataque
             if (stateInfo.normalizedTime >= 0.5f)
             {
                 canAttack = true;

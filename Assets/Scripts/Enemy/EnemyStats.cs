@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.AI;
 
 public class EnemyStats : MonoBehaviour
 {
@@ -20,7 +21,12 @@ public class EnemyStats : MonoBehaviour
     {
         if(actualHp <= 0)
         {
-            Destroy(this.gameObject);
+            GetComponentInChildren<Animator>().SetTrigger("isDie");
+            GetComponent<EnemyFSM>().enabled = false;
+            GetComponent<CapsuleCollider>().enabled = false;
+            GetComponent<NavMeshAgent>().isStopped = true;
+            GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotation;
+            Destroy(this.gameObject, 4f);
         }
     }
 }
