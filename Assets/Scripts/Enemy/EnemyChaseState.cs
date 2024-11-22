@@ -27,6 +27,7 @@ public class EnemyChaseState : IState
     public void OnExit()
     {
         _animator.SetBool("isWalk", false);
+        _agent.isStopped = true;
     }
     public void OnFixedTick()
     {
@@ -46,7 +47,7 @@ public class EnemyChaseState : IState
             _fsm.SetState("Idle");
         }
 
-        if(distanceToPlayer <= 2f)
+        if(distanceToPlayer <= 3f)
         {
             _fsm.SetState("Attack");
         }
